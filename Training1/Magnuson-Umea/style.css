@@ -1,13 +1,27 @@
 ﻿html {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
 }
 body {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+}
+
+
+#featuresContainer {
+    position: relative;
+    width: 30vw;
+    height: 100vh;
+}
+
+#optionsContainer {
+    position: relative;
+    width: 30vw;
+    height: 100vh;
 }
 
 #babylonCanvas {
+    position: relative;
+    width: 40vw;
     height: 100vh;
-    width: 100vw;
 }

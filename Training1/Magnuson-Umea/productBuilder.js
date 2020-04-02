@@ -50,7 +50,7 @@ var createScene = function () {
             meshes[i]._material.albedoColor.b = 0.9;
             //meshes[i]._material.albedoColor = new BABYLON.Color3.FromHexString("#FF4444");
 
-            console.log(meshes[i]);
+            //console.log(meshes[i]);
 
           /*  if (meshes[i].name == "Single_SidePanel1") {
                 meshes[i].position = new BABYLON.Vector3(0, 2, 0);
@@ -65,6 +65,13 @@ var createScene = function () {
 
     });
 
+    /*BABYLON.SceneLoader.ImportMesh("", baseUrl, "Roswell.glb", scene, function (meshesB) {
+
+        for (var i = 1; i < meshesB.length; i++) {
+            console.log(meshesB);
+            meshesB[i]._position.x = 2;
+        }
+    });*/
 
     return scene;
 }
@@ -81,4 +88,22 @@ engine.runRenderLoop(function () {
     scene.render();
 
 });
+
+
+//FEATURES
+
+var $featuresList = $("<div>", { "class": "list-group", "id": "featuresList" });
+$("#featureChoice").append($featuresList);
+
+for (nFeatures = 0; nFeatures < umeaInfo.Features.length; nFeatures++) {
+    var $feature = $("<a>", {
+        "class": "list-group-item list-group-item-action",
+        "id": "feature-" + umeaInfo.Features[nFeatures].Id,
+        "text": umeaInfo.Features[nFeatures].Name,
+        "onClick": "CreateOptions()"
+    });
+    $featuresList.append($feature)
+
+}
+
 
