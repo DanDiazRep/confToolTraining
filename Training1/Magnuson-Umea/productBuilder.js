@@ -11,8 +11,7 @@ var scene = new BABYLON.Scene(engine);
 var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
 camera.setTarget(BABYLON.Vector3.Zero());
 var baseUrl;
-var asyncMesh;
-var currentMesh;
+var model;
 scene.clearColor = new BABYLON.Color3(0, 0, 0); //Background color
 
 
@@ -36,6 +35,7 @@ var createScene = function () {
         var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 2, 0), scene);
         light.intensity = 0.5;
 
+        model = meshes;
 
         for (var i = 1; i < meshes.length; i++) {
 
@@ -44,10 +44,7 @@ var createScene = function () {
             }, false));
 
             meshes[i].isVisible = umeaInfo.defaultLayers.includes(meshes[i].name);
-
-            meshes[i]._material.albedoColor.r = 0;
-            meshes[i]._material.albedoColor.g = 0.3;
-            meshes[i]._material.albedoColor.b = 0.9;
+            
             //meshes[i]._material.albedoColor = new BABYLON.Color3.FromHexString("#FF4444");
 
             //console.log(meshes[i]);
@@ -92,6 +89,7 @@ engine.runRenderLoop(function () {
 
 //FEATURES
 
+
 var $featuresList = $("<div>", { "class": "list-group", "id": "featuresList" });
 $("#featureChoice").append($featuresList);
 
@@ -100,10 +98,57 @@ for (nFeatures = 0; nFeatures < umeaInfo.Features.length; nFeatures++) {
         "class": "list-group-item list-group-item-action",
         "id": "feature-" + umeaInfo.Features[nFeatures].Id,
         "text": umeaInfo.Features[nFeatures].Name,
-        "onClick": "CreateOptions()"
+        "onClick": "CreateOptions(\"" + umeaInfo.Features[nFeatures].Code + "\")"
     });
     $featuresList.append($feature)
 
 }
 
+
+//OPTIONS
+
+function CreateOptions(inputFeaturesCode) {
+    $("#geometryChoice").empty();
+    $("#colorChoice").empty();
+    for (nFeatures = 0; nFeatures < umeaInfo.Features.length; nFeatures++) {
+        if (umeaInfo.Features[nFeatures].Code == inputFeaturesCode)
+            if (umeaInfo.Features[nFeatures].Code) {                
+                for (var nOptions = 0; nOptions < umeaInfo.Features[nFeatures].Options.length; nOptions++) {
+
+                    var $colorOption = $("<div>", {
+                        "class": "color-item",
+                        "id": "color-" + umeaInfo.Features[nFeatures].Options[nOptions].Name,
+                        "style": "background-color: " + umeaInfo.Features[nFeatures].Options[nOptions].HexaColor,
+                        "onClick": "changeColor(\"" + umeaInfo.Features[nFeatures].Options[nOptions].HexaColor + "," +
+                            inputFeaturesCode + "\")"
+                    });
+                    $("#colorChoice").append($colorOption);
+                }
+
+            }
+
+    }
+   
+}
+
+function changeColor(args) {
+
+    var res = args.split(",");
+    var hexaColor = res[0];
+    var featureCode = res[1];
+    var layers;
+
+    //Layer selection
+    for (nFeatures = 0; nFeatures < umeaInfo.Features.length; nFeatures++)
+        if (umeaInfo.Features[nFeatures].Code == featureCode)
+            layers = umeaInfo.Features[nFeatures].UsedLayers;
+
+
+    //Color Appliction
+    for (var meshes = 1; meshes < model.length; meshes++) {
+        if (layers.includes(model[meshes].name)) {
+            model[meshes]._material.albedoColor = new BABYLON.Color3.FromHexString(hexaColor);
+        }
+    }
+}
 
